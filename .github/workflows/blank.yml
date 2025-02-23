@@ -1,4 +1,4 @@
-name: Build and Upload Artifact
+name: Build Angular and Upload Artifact
 
 on:
   push:
@@ -14,37 +14,22 @@ jobs:
 
     steps:
       - name: Checkout do código
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
-      - name: Configurar ambiente para Java
-        if: contains(matrix.language, 'java')
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-
-      - name: Configurar ambiente para Node.js
-        if: contains(matrix.language, 'node')
+      - name: Configurar Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: 18
 
-      - name: Instalar dependências e compilar (Java)
-        if: contains(matrix.language, 'java')
-        run: |
-          mvn clean package
-          mkdir -p artifacts
-          cp target/*.jar artifacts/
+      - name: Instalar dependências
+        run: npm install
 
-      - name: Instalar dependências e empacotar (Node.js)
-        if: contains(matrix.language, 'node')
-        run: |
-          npm install
-          mkdir -p artifacts
-          zip -r artifacts/app.zip .
+      - name: Construir o projeto Angular
+        run: npm run build -- --configuration=production
 
-      - name: Upload do artefato
-        uses: actions/upload-artifact@v4
+      - name: Armazenar build como artefato
+        uses: actions/upload-artifact@v3
         with:
-          name: build-artifact
-          path: artifacts/
+          name: angular-build
+          path: dist/
+          retention-days: 7
