@@ -25,7 +25,7 @@ jobs:
         run: cd hello-world && npm install
 
       - name: Construir o projeto Angular
-        run: cd hello-world && npm run build -- --configuration=production
+        run: cd hello-world && npm run build
 
       - name: Armazenar build como artefato
         uses: actions/upload-artifact@v4
@@ -33,3 +33,17 @@ jobs:
           name: angular-build
           path: ./hello-world/dist/*
           retention-days: 1
+
+  download-and-list:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Baixar artefato
+        uses: actions/download-artifact@v4
+        with:
+          name: angular-build
+          path: downloaded-artifact
+
+      - name: Listar arquivos baixados
+        run: ls -R downloaded-artifact
