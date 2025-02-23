@@ -22,14 +22,14 @@ jobs:
           node-version: 18
 
       - name: Instalar dependências
-        run: npm install
+        run: cd hello-world && npm install
 
       - name: Construir o projeto Angular
-        run: npm run build -- --configuration=production
+        run: cd hello-world && npm run build -- --configuration=production
 
       - name: Armazenar build como artefato
         uses: actions/upload-artifact@v4
         with:
           name: angular-build
-          path: dist/
+          path: cd hello-world/dist/
           retention-days: 7
